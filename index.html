@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Jan Lönnqvist / Pre-Press & Post-Production Expert / Lovehoney Group</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            /* Leather Pride Flag */
+            --black: #000000;
+            --blue: #252580;
+            --white: #ffffff;
+            --red: #E80035;
+            /* Bear Flag accents */
+            --bear-brown: #623804;
+            --bear-orange: #D56300;
+            --bear-tan: #FEE6B8;
+            /* Materials */
+            --chrome: #b8b8b8;
+            --leather-dark: #0d0a08;
+            --leather-mid: #1a1410;
+        }
+
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--leather-dark);
+            color: #fff;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            cursor: none;
+        }
+
+        /* ── REAL LEATHER TEXTURE ── */
+        .leather-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            background:
+                url('https://www.transparenttextures.com/patterns/dark-leather.png') repeat,
+                linear-gradient(180deg, var(--leather-dark), #0a0705);
+            opacity: 0.9;
+            pointer-events: none;
+        }
+
+        /* ── CURSOR ── */
+        .cursor-ring {
+            position: fixed;
+            width: 24px; height: 24px;
+            border: 2px solid var(--red);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: width 0.25s, height 0.25s, border-color 0.25s;
+            mix-blend-mode: difference;
+        }
+        .cursor-ring.hover { width: 56px; height: 56px; border-color: var(--chrome); }
+        .cursor-dot {
+            position: fixed;
+            width: 5px; height: 5px;
+            background: var(--red);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+        }
+
+        /* ── GLOW CANVAS ── */
+        #glowCanvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .content { position: relative; z-index: 2; }
+
+        /* ── HARNESS STRAPS ── */
+        .strap-v-left, .strap-v-right {
+            position: fixed;
+            top: 0;
+            width: 16px;
+            height: 100%;
+            z-index: 3;
+            background:
+                url('https://www.transparenttextures.com/patterns/dark-leather.png') repeat,
+                linear-gradient(90deg, #2a1f18, #1a1410, #2a1f18);
+            pointer-events: none;
+        }
+        .strap-v-left { left: 0; border-right: 1px solid rgba(255,255,255,0.03); }
+        .strap-v-right { right: 0; border-left: 1px solid rgba(255,255,255,0.03); }
+
+        /* ── O-RINGS ── */
+        .o-ring {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            border: 4px solid var(--chrome);
+            background: transparent;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255,255,255,0.1);
+            display: inline-block;
+        }
+        .o-ring-sm {
+            width: 28px; height: 28px;
+            border: 3px solid var(--chrome);
+            border-radius: 50%;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.1);
+        }
+
+        /* ── LEATHER PRIDE FLAG STRIPE ── */
+        .pride-stripe {
+            display: flex;
+            height: 8px;
+        }
+        .pride-stripe div { flex: 1; }
+        .ps-black { background: var(--black); }
+        .ps-blue { background: var(--blue); }
+        .ps-white { background: var(--white); }
+        .ps-red { background: var(--red); }
+
+        /* ── HERO ── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-leather-img {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background:
+                linear-gradient(180deg, rgba(13,10,8,0.3) 0%, rgba(13,10,8,0.7) 50%, rgba(13,10,8,0.95) 100%),
+                url('img2.jpg') center/cover no-repeat;
+            z-index: 0;
+        }
+        .hero-inner {
+            padding: 0 100px;
+            position: relative;
+            z-index: 3;
+            max-width: 820px;
+        }
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--red);
+            margin-bottom: 36px;
+            opacity: 0;
+        }
+        .paw {
+            font-size: 16px;
+            filter: drop-shadow(0 0 6px rgba(232,0,53,0.4));
+        }
+        .hero-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(80px, 14vw, 200px);
+            line-height: 0.82;
+            letter-spacing: 6px;
+            margin-bottom: 32px;
+            text-transform: uppercase;
+        }
+        .hero-title .line {
+            display: block;
+            opacity: 0;
+            transform: translateY(100px) skewX(-4deg);
+        }
+        .hero-title .red { color: var(--red); text-shadow: 0 0 80px rgba(232,0,53,0.4); }
+        .hero-title .stroke {
+            -webkit-text-stroke: 2px var(--chrome);
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-sub {
+            font-size: 15px;
+            line-height: 1.8;
+            color: rgba(255,255,255,0.35);
+            max-width: 460px;
+            opacity: 0;
+        }
+
+        /* Cross-harness on hero */
+        .hero-harness {
+            position: absolute;
+            z-index: 1;
+        }
+        .hero-strap {
+            position: absolute;
+            background:
+                url('https://www.transparenttextures.com/patterns/dark-leather.png') repeat,
+                linear-gradient(180deg, #2a1f18, #1a1410);
+            opacity: 0.25;
+        }
+        .hero-strap-d1 {
+            width: 20px;
+            height: 200%;
+            top: -50%;
+            right: 25%;
+            transform: rotate(25deg);
+            transform-origin: center;
+        }
+        .hero-strap-d2 {
+            width: 20px;
+            height: 200%;
+            top: -50%;
+            right: 30%;
+            transform: rotate(-25deg);
+            transform-origin: center;
+        }
+        .hero-strap-h {
+            height: 20px;
+            width: 60%;
+            top: 45%;
+            right: 10%;
+        }
+        .hero-o-ring {
+            position: absolute;
+            z-index: 2;
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 48px;
+            left: 100px;
+            font-size: 9px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.1);
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            opacity: 0;
+        }
+        .scroll-bar {
+            width: 48px; height: 2px;
+            background: var(--red);
+            position: relative;
+            overflow: hidden;
+        }
+        .scroll-bar::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: #fff;
+            animation: scanLine 2s ease-in-out infinite;
+        }
+        @keyframes scanLine { 0% { left: -100%; } 100% { left: 100%; } }
+
+        /* ── TICKER ── */
+        .ticker-strip {
+            background: var(--red);
+            overflow: hidden;
+        }
+        .ticker-row {
+            display: flex;
+            white-space: nowrap;
+            will-change: transform;
+        }
+        .ticker-item {
+            flex-shrink: 0;
+            padding: 14px 28px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 18px;
+            letter-spacing: 4px;
+            color: var(--black);
+        }
+        .ticker-item.dim { color: rgba(0,0,0,0.25); }
+        .ticker-sep {
+            flex-shrink: 0;
+            align-self: center;
+            font-size: 10px;
+            margin: 0 4px;
+            color: rgba(0,0,0,0.3);
+        }
+
+        /* ── SECTION SYSTEM ── */
+        .section { position: relative; padding: 160px 100px; }
+        .s-tag {
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--red);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .s-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(52px, 7vw, 110px);
+            letter-spacing: 4px;
+            line-height: 0.88;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .s-desc {
+            font-size: 14px;
+            color: rgba(255,255,255,0.28);
+            line-height: 1.8;
+            max-width: 500px;
+        }
+
+        /* ── DRAG SECTION ── */
+        .drag-area {
+            position: relative;
+            min-height: 540px;
+            margin-top: 56px;
+            border: 1px solid rgba(232,0,53,0.06);
+            background:
+                url('https://www.transparenttextures.com/patterns/dark-leather.png') repeat,
+                rgba(0,0,0,0.3);
+            border-radius: 2px;
+        }
+        .drag-hint {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 28px;
+            letter-spacing: 8px;
+            color: rgba(255,255,255,0.03);
+            pointer-events: none;
+            text-transform: uppercase;
+            transition: opacity 0.5s;
+        }
+        .drag-card {
+            position: absolute;
+            width: 270px;
+            padding: 28px 24px;
+            cursor: grab;
+            user-select: none;
+            will-change: transform;
+            z-index: 2;
+            border-radius: 0;
+            transition: box-shadow 0.3s;
+            background:
+                url('https://www.transparenttextures.com/patterns/dark-leather.png') repeat;
+        }
+        .drag-card:active { cursor: grabbing; }
+        .drag-card:hover { box-shadow: 0 24px 64px rgba(0,0,0,0.8); }
+        .drag-card .card-label {
+            font-size: 8px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: inline-block;
+            padding: 4px 10px;
+        }
+        .drag-card h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 24px;
+            letter-spacing: 3px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        .drag-card p {
+            font-size: 11px;
+            line-height: 1.75;
+            opacity: 0.55;
+        }
+        .dc-red { background-color: rgba(232,0,53,0.08); border: 1px solid rgba(232,0,53,0.15); }
+        .dc-red .card-label { background: rgba(232,0,53,0.2); color: var(--red); }
+        .dc-blue { background-color: rgba(37,37,128,0.12); border: 1px solid rgba(37,37,128,0.2); }
+        .dc-blue .card-label { background: rgba(37,37,128,0.25); color: #7070cc; }
+        .dc-brown { background-color: rgba(98,56,4,0.1); border: 1px solid rgba(98,56,4,0.15); }
+        .dc-brown .card-label { background: rgba(98,56,4,0.2); color: var(--bear-orange); }
+        .dc-chrome { background-color: rgba(184,184,184,0.04); border: 1px solid rgba(184,184,184,0.06); }
+        .dc-chrome .card-label { background: rgba(184,184,184,0.08); color: var(--chrome); }
+        .dc-dark { background-color: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
+        .dc-dark .card-label { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.4); }
+
+        /* ── SPRING CARDS ── */
+        .spring-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            margin-top: 56px;
+        }
+        .spring-card {
+            background:
+                url('https://www.transparenttextures.com/patterns/dark-leather.png') repeat,
+                var(--leather-mid);
+            padding: 48px 28px;
+            position: relative;
+            overflow: hidden;
+            will-change: transform;
+            border: 1px solid rgba(232,0,53,0.03);
+        }
+        .spring-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(232,0,53,0.1), transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .spring-card:hover::before { opacity: 1; }
+        .spring-card:hover { border-color: rgba(232,0,53,0.1); }
+        .spring-card .num {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 64px;
+            letter-spacing: 3px;
+            color: var(--red);
+            margin-bottom: 12px;
+            text-shadow: 0 0 30px rgba(232,0,53,0.2);
+        }
+        .spring-card h4 { font-size: 14px; font-weight: 800; margin-bottom: 8px; }
+        .spring-card p { font-size: 11px; line-height: 1.7; color: rgba(255,255,255,0.22); }
+
+        /* ── PRINT HERITAGE ── */
+        .heritage-section {
+            background:
+                url('https://www.transparenttextures.com/patterns/dark-leather.png') repeat,
+                linear-gradient(135deg, var(--leather-mid), rgba(37,37,128,0.08));
+        }
+        .heritage-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+        .heritage-tiles {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2px;
+        }
+        .heritage-tile {
+            background: rgba(232,0,53,0.03);
+            border: 1px solid rgba(232,0,53,0.06);
+            padding: 28px 20px;
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .heritage-tile:hover {
+            transform: translateY(-4px);
+            border-color: rgba(232,0,53,0.15);
+            background: rgba(232,0,53,0.06);
+        }
+        .heritage-tile .t-num {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 32px;
+            color: var(--red);
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+        .heritage-tile .t-label { font-size: 12px; font-weight: 800; margin-bottom: 4px; }
+        .heritage-tile .t-desc { font-size: 10px; color: rgba(255,255,255,0.18); line-height: 1.6; }
+
+        /* ── EXPERIENCE ── */
+        .exp-timeline {
+            margin-top: 56px;
+            padding-left: 44px;
+            position: relative;
+        }
+        .exp-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--red), var(--blue), var(--bear-brown), rgba(255,255,255,0.03));
+        }
+        .exp-item {
+            position: relative;
+            padding-bottom: 48px;
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        .exp-item::before {
+            content: '';
+            position: absolute;
+            left: -50px; top: 4px;
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: var(--red);
+            box-shadow: 0 0 12px rgba(232,0,53,0.3);
+        }
+        .exp-year {
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: var(--red);
+            margin-bottom: 6px;
+        }
+        .exp-role {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 28px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+        .exp-company { font-size: 12px; color: rgba(255,255,255,0.22); margin-bottom: 8px; }
+        .exp-desc { font-size: 11px; line-height: 1.8; color: rgba(255,255,255,0.15); max-width: 480px; }
+        .exp-item.print-hl::after {
+            content: '🐾 PRINT';
+            position: absolute;
+            right: 0; top: 4px;
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: var(--red);
+            opacity: 0.35;
+        }
+
+        /* ── SKILLS FIELD ── */
+        .skills-field {
+            position: relative;
+            min-height: 340px;
+            margin-top: 48px;
+        }
+        .skill-orb {
+            position: absolute;
+            padding: 10px 20px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            will-change: transform;
+            transition: background 0.3s, border-color 0.3s, color 0.3s;
+            cursor: default;
+        }
+        .skill-orb:hover {
+            background: rgba(232,0,53,0.1);
+            border-color: rgba(232,0,53,0.2);
+            color: var(--red);
+        }
+        .skill-orb.core {
+            border-color: rgba(232,0,53,0.1);
+            color: rgba(255,255,255,0.65);
+        }
+
+        /* ── INFO ── */
+        .info-strip {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            background:
+                url('https://www.transparenttextures.com/patterns/dark-leather.png') repeat,
+                var(--leather-mid);
+        }
+        .info-cell {
+            padding: 48px 40px;
+            border-right: 1px solid rgba(232,0,53,0.04);
+        }
+        .info-cell:last-child { border-right: none; }
+        .info-label {
+            font-size: 8px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--red);
+            opacity: 0.45;
+            margin-bottom: 8px;
+        }
+        .info-val { font-size: 15px; font-weight: 800; }
+        .info-sub { font-size: 11px; color: rgba(255,255,255,0.18); margin-top: 4px; }
+
+        /* ── CTA ── */
+        .cta-section {
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-section h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(72px, 12vw, 180px);
+            letter-spacing: 8px;
+            line-height: 0.82;
+            text-transform: uppercase;
+            margin-bottom: 28px;
+            position: relative;
+            z-index: 2;
+        }
+        .cta-section h2 .red { color: var(--red); text-shadow: 0 0 80px rgba(232,0,53,0.3); }
+        .cta-section p {
+            font-size: 13px;
+            color: rgba(255,255,255,0.22);
+            max-width: 440px;
+            line-height: 1.8;
+            margin-bottom: 44px;
+            position: relative;
+            z-index: 2;
+        }
+        .cta-btn {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px;
+            letter-spacing: 6px;
+            padding: 20px 64px;
+            background: var(--red);
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            display: inline-block;
+            position: relative;
+            z-index: 2;
+            text-transform: uppercase;
+        }
+        .cta-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 60px rgba(232,0,53,0.3), 0 0 120px rgba(232,0,53,0.08);
+        }
+        .cta-glow {
+            position: absolute;
+            width: 600px; height: 600px;
+            border-radius: 50%;
+            background: var(--red);
+            filter: blur(250px);
+            opacity: 0.04;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+        }
+        .cta-o-ring {
+            position: absolute;
+            z-index: 1;
+            opacity: 0.08;
+        }
+
+        footer {
+            border-top: 1px solid rgba(232,0,53,0.04);
+            padding: 24px 100px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: rgba(255,255,255,0.08);
+            letter-spacing: 1px;
+        }
+
+        /* ── REVEAL ── */
+        .rv {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .rv.vis { opacity: 1; transform: translateY(0); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            body { cursor: auto; }
+            .cursor-ring, .cursor-dot { display: none; }
+            .strap-v-left, .strap-v-right { display: none; }
+            .hero-inner { padding: 0 32px; }
+            .section { padding: 100px 24px; }
+            .spring-grid { grid-template-columns: 1fr; }
+            .heritage-split { grid-template-columns: 1fr; gap: 40px; }
+            .info-strip { grid-template-columns: 1fr; }
+            .info-cell { border-right: none; border-bottom: 1px solid rgba(232,0,53,0.04); }
+            .scroll-hint { left: 32px; }
+            .drag-area { min-height: 700px; }
+            .cta-section { padding: 60px 24px; }
+            footer { padding: 20px 24px; flex-direction: column; gap: 8px; }
+            .hero-strap { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── CURSOR ── -->
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+
+<!-- ── LEATHER TEXTURE BG ── -->
+<div class="leather-bg"></div>
+
+<!-- ── GLOW CANVAS ── -->
+<canvas id="glowCanvas"></canvas>
+
+<!-- ── VERTICAL HARNESS STRAPS (left + right) ── -->
+<div class="strap-v-left"></div>
+<div class="strap-v-right"></div>
+
+<!-- ── CONTENT ── -->
+<div class="content">
+
+<!-- ── LEATHER PRIDE FLAG ── -->
+<div class="pride-stripe">
+    <div class="ps-black"></div><div class="ps-blue"></div>
+    <div class="ps-black"></div><div class="ps-blue"></div>
+    <div class="ps-white"></div>
+    <div class="ps-blue"></div><div class="ps-black"></div>
+    <div class="ps-blue"></div><div class="ps-black"></div>
+</div>
+
+<!-- ── HERO ── -->
+<section class="hero">
+    <div class="hero-leather-img"></div>
+    <!-- Harness cross straps -->
+    <div class="hero-strap hero-strap-d1"></div>
+    <div class="hero-strap hero-strap-d2"></div>
+    <div class="hero-strap hero-strap-h"></div>
+    <div class="hero-o-ring" style="top:44%;right:27.5%;">
+        <div class="o-ring"></div>
+    </div>
+
+    <div class="hero-inner">
+        <div class="hero-tag"><span class="paw">🐾</span> Lovehoney Group / Pre-Press & Post-Production</div>
+        <h1 class="hero-title">
+            <span class="line"><span class="red">Hard</span></span>
+            <span class="line"><span class="stroke">press.</span></span>
+            <span class="line"><span class="red">Deep ink.</span></span>
+        </h1>
+        <p class="hero-sub">10+ years making things physical. Press checks, packaging, offset, colour management. I know pressure, precision, and how to make every impression count.</p>
+    </div>
+    <div class="scroll-hint"><div class="scroll-bar"></div>Scroll down</div>
+</section>
+
+<!-- ── TICKER ── -->
+<div class="ticker-strip">
+    <div class="ticker-row" id="tickerRow">
+        <span class="ticker-item">Pre-Press</span><span class="ticker-sep">✦</span>
+        <span class="ticker-item dim">Offset Printing</span><span class="ticker-sep">✦</span>
+        <span class="ticker-item">Colour Management</span><span class="ticker-sep">✦</span>
+        <span class="ticker-item dim">Packaging</span><span class="ticker-sep">✦</span>
+        <span class="ticker-item">DTP</span><span class="ticker-sep">✦</span>
+        <span class="ticker-item dim">File Prep</span><span class="ticker-sep">✦</span>
+        <span class="ticker-item">Print Production</span><span class="ticker-sep">✦</span>
+        <span class="ticker-item dim">Post-Production</span><span class="ticker-sep">✦</span>
+        <span class="ticker-item">Fogra</span><span class="ticker-sep">✦</span>
+        <span class="ticker-item dim">Brand Systems</span><span class="ticker-sep">✦</span>
+        <span class="ticker-item">Pre-Press</span><span class="ticker-sep">✦</span>
+        <span class="ticker-item dim">Offset Printing</span><span class="ticker-sep">✦</span>
+        <span class="ticker-item">Colour Management</span><span class="ticker-sep">✦</span>
+        <span class="ticker-item dim">Packaging</span><span class="ticker-sep">✦</span>
+        <span class="ticker-item">DTP</span><span class="ticker-sep">✦</span>
+        <span class="ticker-item dim">File Prep</span><span class="ticker-sep">✦</span>
+        <span class="ticker-item">Print Production</span><span class="ticker-sep">✦</span>
+        <span class="ticker-item dim">Post-Production</span><span class="ticker-sep">✦</span>
+        <span class="ticker-item">Fogra</span><span class="ticker-sep">✦</span>
+        <span class="ticker-item dim">Brand Systems</span><span class="ticker-sep">✦</span>
+    </div>
+</div>
+
+<!-- ── DRAG ── -->
+<section class="section">
+    <div class="s-tag rv"><span class="paw">🐾</span> Why Me</div>
+    <h2 class="s-title rv">Grip<br><span style="color:var(--red);">tight.</span></h2>
+    <p class="s-desc rv">Drag them around. Hands-on, dominant, built for heavy production.</p>
+    <div class="drag-area" id="dragArea">
+        <div class="drag-hint" id="dragHint">GRAB &bull; DRAG &bull; REARRANGE</div>
+        <div class="drag-card dc-red" style="left:40px;top:40px;" data-drag>
+            <div class="card-label">Print Heritage</div>
+            <h4>Born in Print Houses</h4>
+            <p>Started in offset print production at 19. Prepress, plate-making, colour proofing, press checks. The entire production chain from file to finished product.</p>
+        </div>
+        <div class="drag-card dc-blue" style="left:340px;top:30px;" data-drag>
+            <div class="card-label">Packaging</div>
+            <h4>Packaging Production</h4>
+            <p>Rituals Cosmetics / packaging across seasonal product lines. Die-cutting, spot UV, foil stamping, colour consistency across print runs.</p>
+        </div>
+        <div class="drag-card dc-brown" style="left:640px;top:50px;" data-drag>
+            <div class="card-label">Scale</div>
+            <h4>Volume at Quality</h4>
+            <p>DHL, HelloFresh, Rituals, IKEA / high-volume production environments where every file needs to be perfect before it hits the press.</p>
+        </div>
+        <div class="drag-card dc-chrome" style="left:80px;top:290px;" data-drag>
+            <div class="card-label">Localisation</div>
+            <h4>Multi-Market Packaging</h4>
+            <p>12+ European markets for DHL. Self-led localisation of packaging, safety instructions, user manuals, POS materials.</p>
+        </div>
+        <div class="drag-card dc-dark" style="left:400px;top:310px;" data-drag>
+            <div class="card-label">AI</div>
+            <h4>AI-Augmented Workflow</h4>
+            <p>AI tools for production optimisation, file prep automation, creative problem-solving. My partner works in AI / I understand the technology deeply.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ── PRINT HERITAGE ── -->
+<section class="section heritage-section">
+    <div class="heritage-split">
+        <div>
+            <div class="s-tag rv"><span class="paw">🐾</span> Print Heritage</div>
+            <h2 class="s-title rv">Trained<br><span style="color:var(--red);">hard.</span></h2>
+            <p class="s-desc rv">Straight into print houses from the start / learning offset, digital, large format, prepress workflow, and colour science on the production floor. Not from a screen. From the press room.</p>
+        </div>
+        <div class="heritage-tiles">
+            <div class="heritage-tile rv" style="transition-delay:0s;">
+                <div class="t-num">2013</div>
+                <div class="t-label">First Print House</div>
+                <div class="t-desc">Multiprint Ltd. DTP and prepress production.</div>
+            </div>
+            <div class="heritage-tile rv" style="transition-delay:0.1s;">
+                <div class="t-num">2015</div>
+                <div class="t-label">Offset Specialist</div>
+                <div class="t-desc">Lönnberg Painot. Print production, plate-making, proofing, press checks.</div>
+            </div>
+            <div class="heritage-tile rv" style="transition-delay:0.2s;">
+                <div class="t-num">2016</div>
+                <div class="t-label">Production Design</div>
+                <div class="t-desc">Pixmill Group. Design rooted in production.</div>
+            </div>
+            <div class="heritage-tile rv" style="transition-delay:0.3s;">
+                <div class="t-num">2022</div>
+                <div class="t-label">Packaging + Retail</div>
+                <div class="t-desc">Rituals Cosmetics. Premium packaging, spatial, print at brand level.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── SPRING NUMBERS ── -->
+<section class="section">
+    <div class="s-tag rv"><span class="paw">🐾</span> Impact</div>
+    <h2 class="s-title rv">The<br><span style="color:var(--red);">numbers.</span></h2>
+    <div class="spring-grid">
+        <div class="spring-card rv" style="transition-delay:0s;">
+            <div class="num">10+</div>
+            <h4>Years in Print</h4>
+            <p>From DTP intern to senior production designer. Offset, digital, packaging, large format.</p>
+        </div>
+        <div class="spring-card rv" style="transition-delay:0.1s;">
+            <div class="num">12+</div>
+            <h4>Markets Localised</h4>
+            <p>DHL campaigns. Packaging and marketing materials adapted for each European market.</p>
+        </div>
+        <div class="spring-card rv" style="transition-delay:0.2s;">
+            <div class="num">#1</div>
+            <h4>Record Sales</h4>
+            <p>Rituals Hammam campaign / highest sales in the product's history.</p>
+        </div>
+        <div class="spring-card rv" style="transition-delay:0.3s;">
+            <div class="num">100s</div>
+            <h4>Assets at Scale</h4>
+            <p>Packaging, POS, user manuals, safety instructions, marketing materials.</p>
+        </div>
+        <div class="spring-card rv" style="transition-delay:0.4s;">
+            <div class="num">AI</div>
+            <h4>Workflow</h4>
+            <p>AI tools for production optimisation, file preparation, concept exploration.</p>
+        </div>
+        <div class="spring-card rv" style="transition-delay:0.5s;">
+            <div class="num">NL</div>
+            <h4>Amsterdam</h4>
+            <p>Already in Lovehoney's hub city. Ready hybrid from day one.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ── EXPERIENCE ── -->
+<section class="section">
+    <div class="s-tag rv"><span class="paw">🐾</span> Experience</div>
+    <h2 class="s-title rv">From the<br><span style="color:var(--red);">backroom.</span></h2>
+    <div class="exp-timeline">
+        <div class="exp-item">
+            <div class="exp-year">2024</div>
+            <div class="exp-role">Senior Graphic Designer (Agency)</div>
+            <div class="exp-company">DHL / Multi-Market</div>
+            <div class="exp-desc">Data-driven campaigns, self-led localisation of packaging and marketing materials across 12+ European markets.</div>
+        </div>
+        <div class="exp-item">
+            <div class="exp-year">2022 — 2024</div>
+            <div class="exp-role">Visual Specialist</div>
+            <div class="exp-company">Rituals Cosmetics</div>
+            <div class="exp-desc">Premium packaging production, DTP, seasonal campaigns. Press-ready file preparation, colour management, print vendor liaison.</div>
+        </div>
+        <div class="exp-item">
+            <div class="exp-year">2022</div>
+            <div class="exp-role">Creative / DTP</div>
+            <div class="exp-company">HelloFresh</div>
+            <div class="exp-desc">High-volume packaging and marketing production. Team leading, managing print vendors.</div>
+        </div>
+        <div class="exp-item">
+            <div class="exp-year">2019 — 2020</div>
+            <div class="exp-role">Graphic Artist</div>
+            <div class="exp-company">IKEA Group</div>
+            <div class="exp-desc">DTP and graphic design for retail. Large format, POS, in-store print production.</div>
+        </div>
+        <div class="exp-item">
+            <div class="exp-year">2019</div>
+            <div class="exp-role">Art Director</div>
+            <div class="exp-company">Valve / Helsinki</div>
+            <div class="exp-desc">Art direction, creative strategy, print and digital.</div>
+        </div>
+        <div class="exp-item print-hl">
+            <div class="exp-year">2013 — 2019</div>
+            <div class="exp-role">DTP / Prepress / Production</div>
+            <div class="exp-company">Lönnberg Painot, Multiprint, Pixmill, Planex, Cocomms</div>
+            <div class="exp-desc">The foundation. Offset print production, prepress workflow, plate-making, colour proofing, press checks, file preparation. Hands on the machines. Ink under the nails. Production quality is non-negotiable.</div>
+        </div>
+    </div>
+</section>
+
+<!-- ── SKILLS ── -->
+<section class="section">
+    <div class="s-tag rv"><span class="paw">🐾</span> Tools & Skills</div>
+    <h2 class="s-title rv">Move through<br><span style="color:var(--red);">the field.</span></h2>
+    <div class="skills-field" id="skillsField"></div>
+</section>
+
+<!-- ── LEATHER PRIDE FLAG ── -->
+<div class="pride-stripe">
+    <div class="ps-black"></div><div class="ps-blue"></div>
+    <div class="ps-black"></div><div class="ps-blue"></div>
+    <div class="ps-white"></div>
+    <div class="ps-blue"></div><div class="ps-black"></div>
+    <div class="ps-blue"></div><div class="ps-black"></div>
+</div>
+
+<!-- ── INFO ── -->
+<div class="info-strip">
+    <div class="info-cell rv">
+        <div class="info-label">Location</div>
+        <div class="info-val">Amsterdam, NL</div>
+        <div class="info-sub">Open to Berlin / hybrid</div>
+    </div>
+    <div class="info-cell rv" style="transition-delay:0.1s;">
+        <div class="info-label">Languages</div>
+        <div class="info-val">Fluent English, Native Finnish</div>
+        <div class="info-sub">International team experience</div>
+    </div>
+    <div class="info-cell rv" style="transition-delay:0.2s;">
+        <div class="info-label">Availability</div>
+        <div class="info-val">Immediate</div>
+        <div class="info-sub">Ready to start</div>
+    </div>
+</div>
+
+<!-- ── CTA ── -->
+<section class="cta-section">
+    <div class="cta-glow"></div>
+    <div class="cta-o-ring" style="top:20%;left:15%;"><div class="o-ring" style="width:80px;height:80px;border-width:6px;"></div></div>
+    <div class="cta-o-ring" style="bottom:25%;right:18%;"><div class="o-ring" style="width:56px;height:56px;border-width:5px;"></div></div>
+    <div class="cta-o-ring" style="top:60%;left:70%;"><div class="o-ring" style="width:36px;height:36px;border-width:3px;"></div></div>
+    <h2 class="rv">Let's<br><span class="red">get physical.</span></h2>
+    <p class="rv" style="transition-delay:0.1s;">Pre-press expertise, packaging production, multi-market localisation. Ready to make every Lovehoney product look as good as it feels.</p>
+    <a href="mailto:jan.lonnqvist@windowslive.com" class="cta-btn rv" style="transition-delay:0.2s;">Get in Touch</a>
+</section>
+
+<!-- ── LEATHER PRIDE FLAG ── -->
+<div class="pride-stripe">
+    <div class="ps-black"></div><div class="ps-blue"></div>
+    <div class="ps-black"></div><div class="ps-blue"></div>
+    <div class="ps-white"></div>
+    <div class="ps-blue"></div><div class="ps-black"></div>
+    <div class="ps-blue"></div><div class="ps-black"></div>
+</div>
+
+<footer>
+    <span>Jan Lönnqvist / 2026</span>
+    <span>jan.lonnqvist@windowslive.com</span>
+</footer>
+
+</div>
+
+<script>
+// ── CURSOR ──
+const cursorRing = document.getElementById('cursorRing');
+const cursorDot = document.getElementById('cursorDot');
+let mx = 0, my = 0, rx = 0, ry = 0, ddx = 0, ddy = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+document.querySelectorAll('a, .drag-card, .spring-card, .skill-orb, .heritage-tile, .cta-btn, .o-ring').forEach(el => {
+    el.addEventListener('mouseenter', () => cursorRing.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cursorRing.classList.remove('hover'));
+});
+
+// ── RED PARTICLE NETWORK ──
+const gCanvas = document.getElementById('glowCanvas');
+const gctx = gCanvas.getContext('2d');
+let gW, gH;
+function resizeGCanvas() { gW = gCanvas.width = window.innerWidth; gH = gCanvas.height = window.innerHeight; }
+resizeGCanvas();
+window.addEventListener('resize', resizeGCanvas);
+
+const nodes = [];
+const NODE_COUNT = 55;
+const CONN_DIST = 130;
+const CURSOR_R = 150;
+
+class Node {
+    constructor() {
+        this.x = Math.random() * gW; this.y = Math.random() * gH;
+        this.vx = (Math.random() - 0.5) * 0.35; this.vy = (Math.random() - 0.5) * 0.35;
+        this.r = Math.random() * 1.5 + 0.5;
+        this.a = Math.random() * 0.25 + 0.05;
+    }
+    update() {
+        const dx = this.x - mx, dy = this.y - my;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < CURSOR_R && dist > 0) {
+            const f = (1 - dist/CURSOR_R) * 0.5;
+            this.vx += (dx/dist)*f; this.vy += (dy/dist)*f;
+        }
+        this.vy -= scrollVel * 0.003;
+        this.vx *= 0.98; this.vy *= 0.98;
+        this.x += this.vx; this.y += this.vy;
+        if (this.x < 0) this.x = gW; if (this.x > gW) this.x = 0;
+        if (this.y < 0) this.y = gH; if (this.y > gH) this.y = 0;
+    }
+    draw() {
+        gctx.beginPath();
+        gctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
+        gctx.fillStyle = `rgba(232, 0, 53, ${this.a})`;
+        gctx.fill();
+    }
+}
+for (let i = 0; i < NODE_COUNT; i++) nodes.push(new Node());
+
+// ── SCROLL ──
+let smoothSy = 0, targetSy = 0, prevSy = 0, scrollVel = 0;
+window.addEventListener('scroll', () => { targetSy = window.scrollY; });
+
+// ── TICKER ──
+const tickerRow = document.getElementById('tickerRow');
+let tickerOff = 0;
+
+// ── DRAG ──
+const dragCards = document.querySelectorAll('[data-drag]');
+const dragArea = document.getElementById('dragArea');
+const dragHint = document.getElementById('dragHint');
+let activeDrag = null, dragOX = 0, dragOY = 0;
+dragCards.forEach(card => {
+    card.addEventListener('mousedown', e => {
+        activeDrag = card;
+        const r = card.getBoundingClientRect();
+        dragOX = e.clientX - r.left; dragOY = e.clientY - r.top;
+        card.style.zIndex = 10; e.preventDefault();
+    });
+    card.addEventListener('touchstart', e => {
+        activeDrag = card;
+        const r = card.getBoundingClientRect();
+        const t = e.touches[0];
+        dragOX = t.clientX - r.left; dragOY = t.clientY - r.top;
+        card.style.zIndex = 10; e.preventDefault();
+    }, { passive: false });
+});
+function handleDragMove(cx, cy) {
+    if (!activeDrag) return;
+    if (dragHint) dragHint.style.opacity = '0';
+    const ar = dragArea.getBoundingClientRect();
+    let x = cx - ar.left - dragOX, y = cy - ar.top - dragOY;
+    x = Math.max(0, Math.min(ar.width - activeDrag.offsetWidth, x));
+    y = Math.max(0, Math.min(ar.height - activeDrag.offsetHeight, y));
+    activeDrag.style.left = x+'px'; activeDrag.style.top = y+'px';
+}
+document.addEventListener('mousemove', e => handleDragMove(e.clientX, e.clientY));
+document.addEventListener('touchmove', e => handleDragMove(e.touches[0].clientX, e.touches[0].clientY), { passive: false });
+document.addEventListener('mouseup', () => { if (activeDrag) { activeDrag.style.zIndex = 2; activeDrag = null; } });
+document.addEventListener('touchend', () => { if (activeDrag) { activeDrag.style.zIndex = 2; activeDrag = null; } });
+
+// ── SPRING CARDS ──
+const springCards = document.querySelectorAll('.spring-card');
+const cardPhys = [];
+springCards.forEach(c => {
+    cardPhys.push({ el: c, x: 0, y: 0, vx: 0, vy: 0 });
+    c.addEventListener('mousemove', e => {
+        const r = c.getBoundingClientRect();
+        c.style.setProperty('--mx', ((e.clientX-r.left)/r.width*100)+'%');
+        c.style.setProperty('--my', ((e.clientY-r.top)/r.height*100)+'%');
+    });
+});
+
+// ── SKILLS FIELD ──
+const skillsList = [
+    { name: 'Pre-Press', core: true }, { name: 'Offset Printing', core: true },
+    { name: 'Colour Management', core: true }, { name: 'File Preparation', core: true },
+    { name: 'InDesign', core: true }, { name: 'Illustrator', core: false },
+    { name: 'Photoshop', core: false }, { name: 'Packaging Design', core: true },
+    { name: 'DTP', core: true }, { name: 'Print Production', core: true },
+    { name: 'Figma', core: false }, { name: 'After Effects', core: false },
+    { name: 'Premiere Pro', core: false }, { name: 'Art Direction', core: false },
+    { name: 'Brand Systems', core: false }, { name: 'Typography', core: true },
+    { name: 'Localisation', core: false }, { name: 'AI Tools', core: false },
+    { name: 'Template Design', core: false }, { name: 'Team Leadership', core: false },
+];
+const skillsField = document.getElementById('skillsField');
+const skillOrbs = [];
+skillsList.forEach((s, i) => {
+    const el = document.createElement('div');
+    el.className = 'skill-orb' + (s.core ? ' core' : '');
+    el.textContent = s.name;
+    skillsField.appendChild(el);
+    const cols = 5, row = Math.floor(i/cols), col = i%cols;
+    const bx = col*200+20, by = row*70+20;
+    el.style.left = bx+'px'; el.style.top = by+'px';
+    skillOrbs.push({ el, bx, by, x: bx, y: by, vx: 0, vy: 0 });
+});
+
+// ── HERO ANIM ──
+document.querySelectorAll('.hero-title .line').forEach((line, i) => {
+    setTimeout(() => {
+        line.style.transition = 'opacity 0.8s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1)';
+        line.style.opacity = '1'; line.style.transform = 'translateY(0) skewX(0deg)';
+    }, 300 + i*150);
+});
+setTimeout(() => { const t = document.querySelector('.hero-tag'); t.style.transition = 'opacity 0.6s'; t.style.opacity = '1'; }, 200);
+setTimeout(() => { const s = document.querySelector('.hero-sub'); s.style.transition = 'opacity 0.8s'; s.style.opacity = '1'; }, 900);
+setTimeout(() => { const h = document.querySelector('.scroll-hint'); h.style.transition = 'opacity 0.8s'; h.style.opacity = '1'; }, 1400);
+
+// ── REVEAL ──
+const rvObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.rv').forEach(el => rvObs.observe(el));
+
+// ── EXP REVEAL ──
+const expObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            e.target.querySelectorAll('.exp-item').forEach((item, i) => {
+                setTimeout(() => {
+                    item.style.transition = 'opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)';
+                    item.style.opacity = '1'; item.style.transform = 'translateX(0)';
+                }, i*100);
+            });
+            expObs.unobserve(e.target);
+        }
+    });
+}, { threshold: 0.1 });
+document.querySelectorAll('.exp-timeline').forEach(el => expObs.observe(el));
+
+// ── MAIN LOOP ──
+function mainLoop() {
+    requestAnimationFrame(mainLoop);
+    smoothSy += (targetSy - smoothSy) * 0.08;
+    scrollVel = smoothSy - prevSy; prevSy = smoothSy;
+
+    // Cursor
+    rx += (mx-rx)*0.07; ry += (my-ry)*0.07;
+    ddx += (mx-ddx)*0.15; ddy += (my-ddy)*0.15;
+    if (cursorRing) { cursorRing.style.left = rx+'px'; cursorRing.style.top = ry+'px'; }
+    if (cursorDot) { cursorDot.style.left = ddx+'px'; cursorDot.style.top = ddy+'px'; }
+
+    // Particles
+    gctx.clearRect(0, 0, gW, gH);
+    nodes.forEach(n => { n.update(); n.draw(); });
+    for (let i = 0; i < nodes.length; i++) {
+        for (let j = i+1; j < nodes.length; j++) {
+            const dx = nodes[i].x-nodes[j].x, dy = nodes[i].y-nodes[j].y;
+            const dist = Math.sqrt(dx*dx+dy*dy);
+            if (dist < CONN_DIST) {
+                gctx.beginPath(); gctx.moveTo(nodes[i].x, nodes[i].y); gctx.lineTo(nodes[j].x, nodes[j].y);
+                gctx.strokeStyle = `rgba(232,0,53,${(1-dist/CONN_DIST)*0.07})`; gctx.lineWidth = 0.5; gctx.stroke();
+            }
+        }
+    }
+    nodes.forEach(n => {
+        const dx = n.x-mx, dy = n.y-my, dist = Math.sqrt(dx*dx+dy*dy);
+        if (dist < 100) {
+            gctx.beginPath(); gctx.moveTo(mx, my); gctx.lineTo(n.x, n.y);
+            gctx.strokeStyle = `rgba(232,0,53,${(1-dist/100)*0.2})`; gctx.lineWidth = 0.8; gctx.stroke();
+        }
+    });
+
+    // Ticker
+    const absVel = Math.abs(scrollVel);
+    tickerOff -= 0.7 + absVel*0.5;
+    if (tickerRow) {
+        const half = tickerRow.scrollWidth/2;
+        if (Math.abs(tickerOff) > half) tickerOff += half;
+        tickerRow.style.transform = `translateX(${tickerOff}px)`;
+    }
+
+    // Hero parallax
+    const heroInner = document.querySelector('.hero-inner');
+    if (heroInner && smoothSy < window.innerHeight) {
+        const fade = Math.max(0, 1 - smoothSy/(window.innerHeight*0.45));
+        heroInner.style.opacity = fade;
+        heroInner.style.transform = `translateY(${-smoothSy*0.25}px)`;
+    }
+
+    // Spring cards
+    cardPhys.forEach(cp => {
+        const r = cp.el.getBoundingClientRect();
+        const cx = r.left+r.width/2, cy = r.top+r.height/2;
+        const dx = mx-cx, dy = my-cy, dist = Math.sqrt(dx*dx+dy*dy);
+        if (dist < 280) {
+            const f = (1-dist/280)*6;
+            cp.vx += ((dx/dist)*f - cp.x)*0.04; cp.vy += ((dy/dist)*f - cp.y)*0.04;
+        } else {
+            cp.vx += (0-cp.x)*0.04; cp.vy += (0-cp.y)*0.04;
+        }
+        cp.vx *= 0.85; cp.vy *= 0.85; cp.x += cp.vx; cp.y += cp.vy;
+        cp.el.style.transform = `translate(${cp.x}px, ${cp.y}px)`;
+    });
+
+    // Skills repulsion
+    skillOrbs.forEach(orb => {
+        const r = orb.el.getBoundingClientRect();
+        const cx = r.left+r.width/2, cy = r.top+r.height/2;
+        const dx = cx-mx, dy = cy-my, dist = Math.sqrt(dx*dx+dy*dy);
+        if (dist < 140 && dist > 0) {
+            const f = (1-dist/140)*2.5;
+            orb.vx += (dx/dist)*f; orb.vy += (dy/dist)*f;
+        }
+        orb.vx += (orb.bx-orb.x)*0.03; orb.vy += (orb.by-orb.y)*0.03;
+        orb.vx *= 0.9; orb.vy *= 0.9; orb.x += orb.vx; orb.y += orb.vy;
+        orb.el.style.transform = `translate(${orb.x-orb.bx}px, ${orb.y-orb.by}px)`;
+    });
+}
+mainLoop();
+</script>
+
+</body>
+</html>
